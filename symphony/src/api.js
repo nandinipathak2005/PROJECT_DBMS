@@ -17,7 +17,7 @@ export const fetchCharacters = async () => {
   };
   
   export const fetchBranch = async (branchId) => {
-    const res = await fetch(`/api/puzzles/branch/${branchId}`);
+    const res = await fetch(`http://localhost:3001/api/puzzles/branch/${branchId}`);
     if (!res.ok) throw new Error('Failed to fetch branch');
     return await res.json();
   };
