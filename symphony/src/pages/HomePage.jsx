@@ -340,8 +340,9 @@ export default function HomePage() {
   const toggleAudio = () => setIsAudioPlaying(!isAudioPlaying);
 
   const startGame = () => {
-    console.log("Starting game...");
+    navigate('/puzzle/1');
   };
+  //};
 
   
   return (

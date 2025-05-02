@@ -41,7 +41,9 @@ export default function Puzzle1() {
     
     setQueryResult({ loading: true, data: null, error: null });
     try {
-      const result = await executeQuery(selectedQuery);
+      // const result = await executeQuery(selectedQuery);
+      const result = await executeQuery(selectedQuery, puzzleData?.id || 1);
+
       setQueryResult({ loading: false, data: result, error: null });
 
       if (result?.notebookUpdate) addNotebookEntry(result.notebookUpdate);
