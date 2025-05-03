@@ -39,7 +39,11 @@ export const fetchCharacters = async () => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ query, currentPuzzle }),
+      // body: JSON.stringify({ query, currentPuzzle }),
+      body: JSON.stringify({
+        query,
+        currentPuzzle: Number(currentPuzzle), // ✅ force it to number
+      }),
     });
     if (!res.ok) throw new Error('Failed to execute query');
     return await res.json();
