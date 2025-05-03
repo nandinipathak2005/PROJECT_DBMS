@@ -226,22 +226,52 @@ export default function Puzzle2() {
 //       navigate('/puzzle/3');
 //     }
 //   };
+// const handleProceed = () => {
+//   const result = queryResult?.data;
+
+//   // Check if the result table is empty
+//   if (!result || !result.table || result.table.length === 0) {
+//     // If no data or empty result, show an alert and don't proceed
+//     alert('No valid data was returned for the query. Please try again!');
+//     return; // Don't navigate if no data or empty result
+//   }
+
+//   // If there is a valid branch, navigate there
+//   if (result.branch) {
+//     updatePuzzle(2); // Stay on Puzzle 2 if branch is defined
+//     navigate(result.branch); // Navigate to the branch
+//   } else if (result.next) {
+//     // If there's a next puzzle, proceed to the next one
+//     updatePuzzle(result.next);
+//     navigate(`/puzzle/${result.next}`);
+//   } else {
+//     // Fallback: Default to next puzzle if neither branch nor next is defined
+//     updatePuzzle(3); // Moving to Puzzle 3 as fallback
+//     navigate('/puzzle/3');
+//   }
+// };
 const handleProceed = () => {
   const result = queryResult?.data;
 
-  // Check if the result table is empty
-  if (!result || !result.table || result.table.length === 0) {
-    // If no data or empty result, show an alert and don't proceed
-    alert('No valid data was returned for the query. Please try again!');
-    return; // Don't navigate if no data or empty result
-  }
+  // if (!result) {
+  //   alert('No query result available.');
+  //   return;
+  // }
 
-  // If there is a valid branch, navigate there
-  if (result.branch) {
+  if (result.isMisleading && result.branch) {
     updatePuzzle(2); // Stay on Puzzle 2 if branch is defined
     navigate(result.branch); // Navigate to the branch
-  } else if (result.next) {
-    // If there's a next puzzle, proceed to the next one
+    return; // Exit the function after navigating to the branch
+  }
+
+  // Check if the result table is empty (for correct queries or other scenarios)
+  if (!result.table || result.table.length === 0) {
+    alert('No valid data was returned for the query. Please try again!');
+    return; // Don't navigate if no data or empty result (unless it's a misleading branch)
+  }
+
+  // If there is a valid next puzzle, proceed to the next one
+  if (result.next) {
     updatePuzzle(result.next);
     navigate(`/puzzle/${result.next}`);
   } else {
@@ -250,7 +280,6 @@ const handleProceed = () => {
     navigate('/puzzle/3');
   }
 };
-
   
 
   const formatTime = (minutes) => {
