@@ -34,7 +34,7 @@ module.exports = {
         { text: "SELECT p.name, bm.room_id, bm.time_in FROM backstage_movements bm JOIN personnel p ON bm.person_id = p.person_id WHERE bm.room_id = 'R-03' ORDER BY bm.time_in DESC;" },
         { text: "SELECT p.name, dr.location FROM personnel p JOIN device_registry dr ON p.person_id = SUBSTR(dr.assigned_to, 1, 5) WHERE dr.location LIKE '%Backstage%';" },
       ],
-      // Define expected results in queryController
+       
     },
     'final': {
       title: '🎼 Final Puzzle – Riddle Lock on Symphony Database',

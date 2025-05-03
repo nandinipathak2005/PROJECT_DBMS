@@ -474,10 +474,119 @@
 // };
 
 // module.exports = queryController;
+// const { Sequelize } = require('sequelize');
+// const db = require('../config/db'); // your Sequelize instance
+// const queryController = {
+//   executeQuery: async (req, res) => {
+//     const { query, currentPuzzle, currentBranch } = req.body;
+
+//     let notebookUpdate;
+//     let nextPuzzle;
+//     let branchPath;
+//     let timePenalty = 0;
+//     let isCorrect = false;
+//     let isMisleading = false;
+
+//     try {
+//       //  Execute the query from frontend
+//       const [results, metadata] = await db.query(query);
+//       console.log('Query Results:', results); // Log the results from the database
+
+//       //  Logic based on actual query and puzzle
+//       if (currentPuzzle === 1) {
+//         if (query.includes("vault_access_logs") && query.includes("COUNT(*)")) {
+//           const lydia = results.find(row => row.person_id === 'P1002' && row.access_count === 2);
+//           if (lydia) {
+//             notebookUpdate = 'Suspect: Lydia Crane (P1002). Note: Re-entered vault within minutes.';
+//             nextPuzzle = 2;
+//             isCorrect = true;
+//           }
+//         } else if (query.includes("biometric")) {
+//           timePenalty = 30;
+//         } else if (query.includes("access_time > '2025-04-29 14:00:00'")) {
+//           const match = results.find(row => row.person_id === 'P1100');
+//           if (match) {
+//             branchPath = '/puzzle/1/forgery';
+//             isMisleading = true;
+//           }
+//         } else {
+//           timePenalty = 30; // default penalty
+//         }
+//       } else if (currentPuzzle === 2) {
+//         if (
+//           query.includes("SELECT p.name, sl.event_type, dr.location") &&
+//           query.includes("FROM security_logs sl") &&
+//           query.includes("JOIN device_registry dr ON sl.terminal_id = dr.terminal_id") &&
+//           query.includes("JOIN personnel p ON p.person_id = 'P1033'") &&
+//           query.includes("WHERE sl.event_type = 'footage corrupted'")
+//         ) {
+//           const axel = results.find(row => row.name === 'Axel Borne' && row.event_type === 'footage corrupted' && row.location && row.location.includes('Security Room A'));
+//           if (axel) {
+//             notebookUpdate = 'Suspect: Axel Borne. Note: As the audio technician, he has access and knowledge of the security systems. His presence near the console during the corruption is highly suspicious.';
+//             nextPuzzle = 3;
+//             isCorrect = true;
+//           } else {
+//             timePenalty = 30; // Correct query structure but no matching data
+//           }
+//         } else if (query.includes("SELECT * FROM security_logs WHERE event_type = 'login'")) {
+//           timePenalty = 30; // Incorrect query
+//         } else if (
+//           query.includes("SELECT * FROM device_registry dr") &&
+//           query.includes("JOIN security_logs sl ON dr.terminal_id = sl.terminal_id") &&
+//           query.includes("WHERE dr.location = 'Main Lobby'") &&
+//           query.includes("AND sl.event_type = 'footage corrupted'")
+//         ) {
+//           // Misleading query for Puzzle 2 - Redirect irrespective of results
+//           branchPath = '/puzzle/2/stage-left';
+//           isMisleading = true;
+//         } else {
+//           timePenalty = 30; // Default penalty for other incorrect queries in Puzzle 2
+//         }
+//       } else if (currentPuzzle === 2 && currentBranch === 'stage-left') {
+//         if (query.includes("TIME(sl.timestamp)") && query.includes("'P1067'") && query.includes("'footage corrupted'")) {
+//           // Logic for correct query in the branch - you might want to set isCorrect here
+//           // based on the results if needed.
+//         } else if (query.includes("ORDER BY timestamp DESC") && query.includes("security_logs")) {
+//           timePenalty = 30;
+//         } else if (query.includes("GROUP BY dr.location")) {
+//           timePenalty = 30;
+//         } else if (query.includes("TIME()")) {
+//           // User selected the correct SQL function in the riddle
+//           // You might want to provide specific feedback here.
+//         } else {
+//           timePenalty = 30;
+//         }
+//       } else {
+//         timePenalty = 30; // Default penalty for incorrect puzzle context
+//       }
+
+//       res.json({
+//         resultText: 'Query executed successfully.',
+//         table: results,
+//         notebookUpdate,
+//         next: nextPuzzle,
+//         branch: branchPath,
+//         timePenalty,
+//         isCorrect,
+//         isMisleading,
+//       });
+
+//     } catch (err) {
+//       console.error('Query error:', err);
+//       res.status(400).json({ error: 'Query execution failed. Please check your SQL syntax.', timePenalty: 30 });
+//     }
+//   }
+// };
+// module.exports = queryController;
 const { Sequelize } = require('sequelize');
+//const cleanQuery = query.replace(/\s+/g, ' ').toLowerCase();
+
 const db = require('../config/db'); // your Sequelize instance
 const queryController = {
+ 
   executeQuery: async (req, res) => {
+    
+
     const { query, currentPuzzle, currentBranch } = req.body;
 
     let notebookUpdate;
@@ -556,9 +665,34 @@ const queryController = {
         } else {
           timePenalty = 30;
         }
-      } else {
-        timePenalty = 30; // Default penalty for incorrect puzzle context
+      }else if (currentPuzzle === 3) {
+        // Use cleanQuery here for misleading branch detection:
+        if (
+          cleanQuery.includes("select bm.*, p.name") &&
+          cleanQuery.includes("where bm.person_id = 'p1100'") &&
+          cleanQuery.includes("left join personnel p on bm.person_id = p.person_id")
+        ) {
+          const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);
+          if (unknownEntity) {
+            notebookUpdate = 'Entity "P1100" identified as an anomaly with no personnel record. Likely using a cloned ID or has found a way to remain unrecorded.';
+            nextPuzzle = 4;
+            isCorrect = true;
+          } else {
+            timePenalty = 30;
+          }
+        } else if (cleanQuery.includes("device_registry") && cleanQuery.includes("like '%backstage%'")) {
+          branchPath = '/puzzle/3/technician';
+          isMisleading = true;
+          nextPuzzle = null;
+        } else if (cleanQuery.includes("bm.room_id = 'r-03'") && cleanQuery.includes("order by bm.time_in desc")) {
+          branchPath = '/puzzle/3/archivist';
+          isMisleading = true;
+          nextPuzzle = null;
+        } else {
+          timePenalty = 30;
+        }
       }
+      
 
       res.json({
         resultText: 'Query executed successfully.',
