@@ -665,35 +665,77 @@ const queryController = {
         } else {
           timePenalty = 30;
         }
+      // }if (currentPuzzle === 3) {
+      //   // Correct query for Puzzle 3 (identifying the unknown entity)
+      //   if (
+      //     query.includes("SELECT bm.*, p.name") &&
+      //     query.includes("WHERE bm.person_id = 'P1100'") &&
+      //     query.includes("LEFT JOIN personnel p ON bm.person_id = p.person_id")
+      //   ) {
+      //     const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);
+      //     if (unknownEntity) {
+      //       notebookUpdate = 'Entity "P1100" identified as an anomaly with no personnel record. Likely using a cloned ID or has found a way to remain unrecorded.';
+      //       nextPuzzle = 4;
+      //       isCorrect = true;
+      //     } else {
+      //       timePenalty = 30; // Correct query structure but no matching data
+      //     }
+      //   }
+      //   // Incorrect query for Puzzle 3
+      //   else if (query.includes("SELECT * FROM backstage_movements WHERE room_id = 'R-01'")) {
+      //     timePenalty = 30;
+      //   }
+      //   // Misleading query for Puzzle 3 - Technician branch (unique word: 'device_registry')
+      //   else if (query.includes("device_registry") && query.includes("LIKE '%Backstage%'")) {
+      //     branchPath = '/puzzle/3/technician';
+      //     isMisleading = true;
+      //     nextPuzzle = null;
+      //   }
+      //   // Misleading query for Puzzle 3 - Archivist branch (unique phrase: "bm.room_id = 'R-03'")
+      //   else if (query.includes("bm.room_id = 'R-03'") && query.includes("ORDER BY bm.time_in DESC")) {
+      //     branchPath = '/puzzle/3/archivist';
+      //     isMisleading = true;
+      //     nextPuzzle = null;
+      //   }
+      //   // Default penalty for other incorrect queries in Puzzle 3
+      //   else {
+      //     timePenalty = 30;
+      //   }
+      // } else {
+      //   timePenalty = 30; // Default penalty for incorrect puzzle context
+      // }
       }else if (currentPuzzle === 3) {
-        // Use cleanQuery here for misleading branch detection:
-        if (
-          cleanQuery.includes("select bm.*, p.name") &&
-          cleanQuery.includes("where bm.person_id = 'p1100'") &&
-          cleanQuery.includes("left join personnel p on bm.person_id = p.person_id")
-        ) {
-          const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);
-          if (unknownEntity) {
-            notebookUpdate = 'Entity "P1100" identified as an anomaly with no personnel record. Likely using a cloned ID or has found a way to remain unrecorded.';
-            nextPuzzle = 4;
-            isCorrect = true;
-          } else {
+        switch (parseInt(queryId)) {
+          case 1: // Correct query for Puzzle 3
+            const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);
+            if (unknownEntity) {
+              notebookUpdate = 'Entity "P1100" identified as an anomaly with no personnel record. Likely using a cloned ID or has found a way to remain unrecorded.';
+              nextPuzzle = 4;
+              isCorrect = true;
+            } else {
+              timePenalty = 30;
+            }
+            break;
+          case 2: // Incorrect query for Puzzle 3
             timePenalty = 30;
-          }
-        } else if (cleanQuery.includes("device_registry") && cleanQuery.includes("like '%backstage%'")) {
-          branchPath = '/puzzle/3/technician';
-          isMisleading = true;
-          nextPuzzle = null;
-        } else if (cleanQuery.includes("bm.room_id = 'r-03'") && cleanQuery.includes("order by bm.time_in desc")) {
-          branchPath = '/puzzle/3/archivist';
-          isMisleading = true;
-          nextPuzzle = null;
-        } else {
-          timePenalty = 30;
+            break;
+          case 3: // Misleading - Archivist
+            branchPath = '/puzzle/3/archivist';
+            isMisleading = true;
+            nextPuzzle = null;
+            break;
+          case 4: // Misleading - Technician
+            branchPath = '/puzzle/3/technician';
+            isMisleading = true;
+            nextPuzzle = null;
+            break;
+          default:
+            timePenalty = 30; // Default for other incorrect queries in Puzzle 3
+            break;
         }
+      } else {
+        timePenalty = 30; // Default penalty for incorrect puzzle context
       }
-      
-
       res.json({
         resultText: 'Query executed successfully.',
         table: results,
