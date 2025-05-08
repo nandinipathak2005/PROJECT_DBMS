@@ -49,3 +49,8 @@ export const fetchCharacters = async () => {
     return await res.json();
   };
   
+   export const updatePuzzle = async (puzzleId) => {
+    
+    return Promise.resolve();
+};
+  
