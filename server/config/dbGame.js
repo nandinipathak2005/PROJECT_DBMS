@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = new Sequelize('hidden_symphony_db', 'root', 'root123', {
+const gameDB = new Sequelize('hidden_symphony_db', 'root', 'blacksheep', {
   host: 'localhost',
   dialect: 'mysql',
   logging: false,
@@ -8,3 +8,4 @@ module.exports = new Sequelize('hidden_symphony_db', 'root', 'root123', {
     timestamps: false
   }
 });
+module.exports = gameDB;

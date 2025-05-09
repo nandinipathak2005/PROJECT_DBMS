@@ -318,7 +318,7 @@
 //       try {
 //         const [results] = await db.query(query);
 //         expectedResult = results;
-    
+
 //         // Check if the query is the intended correct one
 //         if (
 //           results.length > 0 &&
@@ -581,11 +581,11 @@
 const { Sequelize } = require('sequelize');
 //const cleanQuery = query.replace(/\s+/g, ' ').toLowerCase();
 
-const db = require('../config/db'); // your Sequelize instance
+const db = require('../config/dbGame'); // your Sequelize instance
 const queryController = {
- 
+
   executeQuery: async (req, res) => {
-    
+
 
     const { query, currentPuzzle, currentBranch } = req.body;
 
@@ -665,46 +665,46 @@ const queryController = {
         } else {
           timePenalty = 30;
         }
-      // }if (currentPuzzle === 3) {
-      //   // Correct query for Puzzle 3 (identifying the unknown entity)
-      //   if (
-      //     query.includes("SELECT bm.*, p.name") &&
-      //     query.includes("WHERE bm.person_id = 'P1100'") &&
-      //     query.includes("LEFT JOIN personnel p ON bm.person_id = p.person_id")
-      //   ) {
-      //     const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);
-      //     if (unknownEntity) {
-      //       notebookUpdate = 'Entity "P1100" identified as an anomaly with no personnel record. Likely using a cloned ID or has found a way to remain unrecorded.';
-      //       nextPuzzle = 4;
-      //       isCorrect = true;
-      //     } else {
-      //       timePenalty = 30; // Correct query structure but no matching data
-      //     }
-      //   }
-      //   // Incorrect query for Puzzle 3
-      //   else if (query.includes("SELECT * FROM backstage_movements WHERE room_id = 'R-01'")) {
-      //     timePenalty = 30;
-      //   }
-      //   // Misleading query for Puzzle 3 - Technician branch (unique word: 'device_registry')
-      //   else if (query.includes("device_registry") && query.includes("LIKE '%Backstage%'")) {
-      //     branchPath = '/puzzle/3/technician';
-      //     isMisleading = true;
-      //     nextPuzzle = null;
-      //   }
-      //   // Misleading query for Puzzle 3 - Archivist branch (unique phrase: "bm.room_id = 'R-03'")
-      //   else if (query.includes("bm.room_id = 'R-03'") && query.includes("ORDER BY bm.time_in DESC")) {
-      //     branchPath = '/puzzle/3/archivist';
-      //     isMisleading = true;
-      //     nextPuzzle = null;
-      //   }
-      //   // Default penalty for other incorrect queries in Puzzle 3
-      //   else {
-      //     timePenalty = 30;
-      //   }
-      // } else {
-      //   timePenalty = 30; // Default penalty for incorrect puzzle context
-      // }
-      }else if (currentPuzzle === 3) {
+        // }if (currentPuzzle === 3) {
+        //   // Correct query for Puzzle 3 (identifying the unknown entity)
+        //   if (
+        //     query.includes("SELECT bm.*, p.name") &&
+        //     query.includes("WHERE bm.person_id = 'P1100'") &&
+        //     query.includes("LEFT JOIN personnel p ON bm.person_id = p.person_id")
+        //   ) {
+        //     const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);
+        //     if (unknownEntity) {
+        //       notebookUpdate = 'Entity "P1100" identified as an anomaly with no personnel record. Likely using a cloned ID or has found a way to remain unrecorded.';
+        //       nextPuzzle = 4;
+        //       isCorrect = true;
+        //     } else {
+        //       timePenalty = 30; // Correct query structure but no matching data
+        //     }
+        //   }
+        //   // Incorrect query for Puzzle 3
+        //   else if (query.includes("SELECT * FROM backstage_movements WHERE room_id = 'R-01'")) {
+        //     timePenalty = 30;
+        //   }
+        //   // Misleading query for Puzzle 3 - Technician branch (unique word: 'device_registry')
+        //   else if (query.includes("device_registry") && query.includes("LIKE '%Backstage%'")) {
+        //     branchPath = '/puzzle/3/technician';
+        //     isMisleading = true;
+        //     nextPuzzle = null;
+        //   }
+        //   // Misleading query for Puzzle 3 - Archivist branch (unique phrase: "bm.room_id = 'R-03'")
+        //   else if (query.includes("bm.room_id = 'R-03'") && query.includes("ORDER BY bm.time_in DESC")) {
+        //     branchPath = '/puzzle/3/archivist';
+        //     isMisleading = true;
+        //     nextPuzzle = null;
+        //   }
+        //   // Default penalty for other incorrect queries in Puzzle 3
+        //   else {
+        //     timePenalty = 30;
+        //   }
+        // } else {
+        //   timePenalty = 30; // Default penalty for incorrect puzzle context
+        // }
+      } else if (currentPuzzle === 3) {
         switch (parseInt(queryId)) {
           case 1: // Correct query for Puzzle 3
             const unknownEntity = results.find(row => row.person_id === 'P1100' && row.time_out === null);

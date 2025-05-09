@@ -11,16 +11,24 @@ import Puzzle3 from './pages/Puzzle3';
 import Puzzle3Branch from './pages/Puzzle3Branch'
 import Puzzle3Branch2 from './pages/Puzzle3Branch2';
 import FinalPuzzle from './pages/FinalPuzzle';
+import LoginPage from './pages/LoginPage';
+import LeaderboardPage from './pages/LeaderboardPage';
+import DashboardPage from './pages/DashboardPage';
+import ProfilePage from './pages/ProfilePage';
 //import EndStageOne from './pages/EndStageOne';
 //import GameEnd from './pages/GameEnd';
- /* <Route path="/final" element={<FinalPuzzle />} />
-          <Route path="/end" element={<GameEnd />} />*/
+/* <Route path="/final" element={<FinalPuzzle />} />
+         <Route path="/end" element={<GameEnd />} />*/
 function App() {
   return (
     <GameProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/home0" element={<HomePage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/characters" element={<CharacterProfiles />} />
           <Route path="/puzzle/1" element={<Puzzle1 />} />
           <Route path="/puzzle/1/forgery" element={<Puzzle1Branch />} />
